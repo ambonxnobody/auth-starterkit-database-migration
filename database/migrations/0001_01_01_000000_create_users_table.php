@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->string('email')->unique()->nullable();
+            $table->text('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('phone')->unique()->nullable();
+            $table->text('phone')->unique()->nullable();
             $table->timestamp('phone_verified_at')->nullable();
-            $table->string('username')->unique()->nullable();
-            $table->string('password');
+            $table->text('username')->unique()->nullable();
+            $table->text('password');
             $table->text('two_factor_secret')->nullable();
             $table->text('two_factor_recovery_codes')->nullable();
             $table->timestamp('two_factor_confirmed_at')->nullable();
@@ -29,7 +29,9 @@ return new class extends Migration
             $table->rememberToken();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
+                'created_by' => null,
                 'updated_at' => null,
+                'updated_by' => null,
                 'deleted_at' => null,
                 'deleted_by' => null
             ]));
@@ -70,7 +72,7 @@ return new class extends Migration
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignIdFor(User::class, 'user_id')->index();
+            $table->foreignIdFor(User::class, 'user_id')->index()->constrained()->cascadeOnDelete();
             $table->string('contact');
             $table->string('type');
             $table->string('token');
@@ -78,7 +80,11 @@ return new class extends Migration
             $table->timestamp('expires_at');
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
+                'created_by' => null,
                 'updated_at' => null,
+                'updated_by' => null,
+                'deleted_at' => null,
+                'deleted_by' => null
             ]));
         });
 
@@ -96,14 +102,18 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignIdFor(User::class, 'user_id')->nullable()->index();
+            $table->foreignIdFor(User::class, 'user_id')->nullable()->index()->constrained()->nullOnDelete();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
+                'created_by' => null,
                 'updated_at' => null,
+                'updated_by' => null,
+                'deleted_at' => null,
+                'deleted_by' => null
             ]));
         });
 

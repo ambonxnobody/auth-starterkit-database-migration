@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Asset extends Model
 {
+    public $timestamps = false;
+    
     protected $fillable = [
         'owner_id',
         'owner_type',

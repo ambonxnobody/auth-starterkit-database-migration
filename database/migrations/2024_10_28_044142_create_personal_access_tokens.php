@@ -12,35 +12,33 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assets', function (Blueprint $table) {
+        Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->nullableUuidMorphs('owner');
+            $table->morphs('tokenable');
             $table->string('name');
-            $table->enum('type', ['image', 'video', 'pdf', 'file']);
-            $table->enum('access', ['public', 'private'])->default('private');
-            $table->enum('bucket_type', ['private', 'public'])->default('private');
-            $table->string('path');
-            $table->decimal('bytes', 20, 0)->default(0);
-            $table->jsonb('file_metadata')->nullable();
+            $table->string('token', 64)->unique();
+            $table->text('abilities')->nullable();
+            $table->timestamp('last_used_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
                 'updated_at' => null,
                 'updated_by' => null,
                 'deleted_at' => null,
-                'deleted_by' => null
+                'deleted_by' => null,
             ]));
         });
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps
-        BEFORE INSERT ON assets
+        BEFORE INSERT ON personal_access_tokens
         FOR EACH ROW EXECUTE FUNCTION update_created_at_jsonb_timestamps();
         ");
 
         DB::statement("
         CREATE TRIGGER set_updated_at_jsonb_timestamps
-        BEFORE UPDATE ON assets
+        BEFORE UPDATE ON personal_access_tokens
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_jsonb_timestamps();
         ");
     }
@@ -50,8 +48,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assets');
-        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON assets;');
-        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON assets;');
+        Schema::dropIfExists('personal_access_tokens');
+        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON personal_access_tokens;');
+        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON personal_access_tokens;');
     }
 };
