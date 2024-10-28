@@ -49,12 +49,6 @@ return new class extends Migration
         ");
 
         DB::statement("
-        CREATE TRIGGER set_created_at_jsonb_timestamps
-        BEFORE INSERT ON users
-        FOR EACH ROW EXECUTE FUNCTION update_created_at_jsonb_timestamps();
-        ");
-
-        DB::statement("
         CREATE OR REPLACE FUNCTION update_updated_at_jsonb_timestamps()
         RETURNS TRIGGER AS $$
         BEGIN
@@ -62,6 +56,12 @@ return new class extends Migration
             RETURN NEW;
         END;
         $$ LANGUAGE plpgsql;
+        ");
+
+        DB::statement("
+        CREATE TRIGGER set_created_at_jsonb_timestamps
+        BEFORE INSERT ON users
+        FOR EACH ROW EXECUTE FUNCTION update_created_at_jsonb_timestamps();
         ");
 
         DB::statement("

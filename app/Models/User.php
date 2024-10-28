@@ -5,8 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use MongoDB\Laravel\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -60,5 +62,28 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class, 'team_user', 'user_id', 'team_id')
+            ->using(TeamUser::class)
+            ->withPivot('role_id', 'metadata')
+            ->as('membership');
+    }
+
+    public function ownTeams(): HasMany
+    {
+        return $this->hasMany(Team::class, 'owner_id');
+    }
+
+    public function profiles(): HasMany
+    {
+        return $this->hasMany(UserProfile::class);
+    }
+
+    public function userSettings(): HasMany
+    {
+        return $this->hasMany(UserSetting::class);
     }
 }

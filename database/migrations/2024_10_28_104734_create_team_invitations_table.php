@@ -1,7 +1,7 @@
 <?php
 
+use App\Models\Role;
 use App\Models\Team;
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -14,11 +14,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('team_user', function (Blueprint $table) {
+        Schema::create('team_invitations', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
             $table->foreignIdFor(Team::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Role::class)->nullable()->constrained()->nullOnDelete();
+            $table->string('contact');
+            $table->string('type')->default('email');
+            $table->string('token')->unique();
+            $table->timestamp('expires_at');
+            $table->foreignIdFor(Role::class)->constrained()->cascadeOnDelete();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
@@ -28,18 +31,18 @@ return new class extends Migration
                 'deleted_by' => null
             ]));
 
-            $table->unique(['team_id', 'user_id']);
+            $table->unique(['team_id', 'contact']);
         });
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps
-        BEFORE INSERT ON team_user
+        BEFORE INSERT ON team_invitations
         FOR EACH ROW EXECUTE FUNCTION update_created_at_jsonb_timestamps();
         ");
 
         DB::statement("
         CREATE TRIGGER set_updated_at_jsonb_timestamps
-        BEFORE UPDATE ON team_user
+        BEFORE UPDATE ON team_invitations
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_jsonb_timestamps();
         ");
     }
@@ -49,8 +52,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('team_user');
-        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON team_user;');
-        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON team_user;');
+        Schema::dropIfExists('team_invitations');
+        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON team_invitations;');
+        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON team_invitations;');
     }
 };

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use MongoDB\Laravel\Eloquent\Model;
 
 class UserProfile extends Model
@@ -12,4 +13,9 @@ class UserProfile extends Model
     protected $connection = 'mongodb';
 
     public $timestamps = false;
+
+    public function avatar(): BelongsTo
+    {
+        return $this->belongsTo(Asset::class, 'avatar_id');
+    }
 }

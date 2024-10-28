@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Team extends Model
 {
@@ -37,5 +38,10 @@ class Team extends Model
             ->using(TeamUser::class)
             ->withPivot('role_id', 'metadata')
             ->as('membership');
+    }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(TeamInvitation::class);
     }
 }
