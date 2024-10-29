@@ -6,24 +6,24 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class RolePermission extends Pivot
+class UserRole extends Pivot
 {
     use HasUuids;
 
     public $timestamps = false;
 
     protected $fillable = [
+        'user_id',
         'role_id',
-        'permission_id',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
-    }
-
-    public function permission(): BelongsTo
-    {
-        return $this->belongsTo(Permission::class);
     }
 }

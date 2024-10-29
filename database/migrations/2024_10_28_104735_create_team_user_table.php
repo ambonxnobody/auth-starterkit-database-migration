@@ -19,7 +19,6 @@ return new class extends Migration
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
             $table->foreignIdFor(Team::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Role::class)->nullable()->constrained()->nullOnDelete();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
