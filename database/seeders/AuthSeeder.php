@@ -17,7 +17,7 @@ class AuthSeeder extends Seeder
     public function run(): void
     {
         $admin = User::factory()->create([
-            'email' => 'admin@sis.io',
+            'email' => 'admin@example.com',
             'role' => 'admin',
             'is_active' => true
         ]);
@@ -26,6 +26,18 @@ class AuthSeeder extends Seeder
             'user_id' => $admin->id,
             'full_name' => 'Admin',
             'nick_name' => 'Admin'
+        ]);
+
+        $teamAdmin = User::factory()->create([
+            'email' => 'team_admin@example.com',
+            'role' => 'user',
+            'is_active' => true
+        ]);
+
+        UserProfile::factory()->create([
+            'user_id' => $teamAdmin->id,
+            'full_name' => 'Team Admin',
+            'nick_name' => 'Team Admin'
         ]);
 
         Permission::create(['name' => 'read:permissions']);
@@ -51,5 +63,7 @@ class AuthSeeder extends Seeder
             'write:users',
             'delete:users'
         ]);
+
+        $teamAdmin->assignRole('admin');
     }
 }

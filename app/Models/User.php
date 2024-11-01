@@ -100,4 +100,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(DB::table('sessions'));
     }
+
+    public function assignRole(string $role): void
+    {
+        $this->roles()->attach(Role::where('name', $role)->first());
+    }
 }
