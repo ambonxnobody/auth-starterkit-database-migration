@@ -4,10 +4,12 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\Team;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use function Symfony\Component\Translation\t;
 
 class AuthSeeder extends Seeder
 {
@@ -38,6 +40,12 @@ class AuthSeeder extends Seeder
             'user_id' => $teamAdmin->id,
             'full_name' => 'Team Admin',
             'nick_name' => 'Team Admin'
+        ]);
+
+        Team::create([
+            'owner_id' => $teamAdmin->id,
+            'name' => "Team Admin's Team",
+            'is_active' => true
         ]);
 
         Permission::create(['name' => 'read:permissions']);

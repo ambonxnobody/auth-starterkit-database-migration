@@ -15,14 +15,17 @@ class Team extends Model
     use HasUuids;
 
     protected $fillable = [
+        'owner_id',
         'name',
-        'personal_team',
+//        'personal_team',
+        'is_active',
     ];
 
     protected function casts(): array
     {
         return [
-            'personal_team' => 'boolean',
+//            'personal_team' => 'boolean',
+            'is_active' => 'boolean',
             'metadata' => 'array',
         ];
     }
