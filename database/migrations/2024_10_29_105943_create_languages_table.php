@@ -1,8 +1,7 @@
 <?php
 
-use App\Models\Role;
-use App\Models\User;
-use Database\Seeders\AuthSeeder;
+use App\Models\Asset;
+use Database\Seeders\LanguageSeeder;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -15,34 +14,37 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_role', function (Blueprint $table) {
+        Schema::create('languages', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignIdFor(User::class)->index()->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Role::class)->index()->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->string('code');
+            $table->string('locale')->unique()->index();
+            $table->boolean('is_rtl')->default(false);
+            $table->foreignIdFor(Asset::class, 'icon_id')->nullable()->constrained()->nullOnDelete();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
                 'updated_at' => null,
                 'updated_by' => null,
                 'deleted_at' => null,
-                'deleted_by' => null,
+                'deleted_by' => null
             ]));
         });
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps
-        BEFORE INSERT ON user_role
+        BEFORE INSERT ON languages
         FOR EACH ROW EXECUTE FUNCTION update_created_at_jsonb_timestamps();
         ");
 
         DB::statement("
         CREATE TRIGGER set_updated_at_jsonb_timestamps
-        BEFORE UPDATE ON user_role
+        BEFORE UPDATE ON languages
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_jsonb_timestamps();
         ");
 
-        $authSeeder = new AuthSeeder();
-        $authSeeder->run();
+        $languageSeeder = new LanguageSeeder();
+        $languageSeeder->run();
     }
 
     /**
@@ -50,8 +52,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_role');
-        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON user_role;');
-        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON user_role;');
+        Schema::dropIfExists('languages');
+        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON languages;');
+        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON languages;');
     }
 };

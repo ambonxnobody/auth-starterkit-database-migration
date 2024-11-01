@@ -14,6 +14,11 @@ class UserProfile extends Model
 
     public $timestamps = false;
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function avatar(): BelongsTo
     {
         return $this->belongsTo(Asset::class, 'avatar_id');

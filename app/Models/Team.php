@@ -29,19 +29,21 @@ class Team extends Model
 
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'team_user', 'team_id', 'user_id')
-            ->using(TeamUser::class)
-            ->withPivot('role_id', 'metadata')
-            ->as('membership');
+        return $this->belongsToMany(User::class, 'team_user')->using(TeamUser::class);
     }
 
     public function invitations(): HasMany
     {
         return $this->hasMany(TeamInvitation::class);
+    }
+
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Role::class);
     }
 }

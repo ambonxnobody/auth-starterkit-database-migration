@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Asset extends Model
 {
+    use HasUuids;
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -34,6 +37,11 @@ class Asset extends Model
 
     public function userProfiles(): HasMany
     {
-        return $this->hasMany(UserProfile::class);
+        return $this->hasMany(UserProfile::class, 'avatar_id');
+    }
+
+    public function languages(): HasMany
+    {
+        return $this->hasMany(Language::class, 'icon_id');
     }
 }

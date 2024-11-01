@@ -6,8 +6,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use MongoDB\Laravel\Relations\HasMany;
 
 class User extends Authenticatable
@@ -66,10 +68,7 @@ class User extends Authenticatable
 
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class, 'team_user', 'user_id', 'team_id')
-            ->using(TeamUser::class)
-            ->withPivot('role_id', 'metadata')
-            ->as('membership');
+        return $this->belongsToMany(Team::class, 'team_user')->using(TeamUser::class);
     }
 
     public function ownTeams(): HasMany
@@ -77,13 +76,28 @@ class User extends Authenticatable
         return $this->hasMany(Team::class, 'owner_id');
     }
 
-    public function profiles(): HasMany
+    public function profiles(): HasOne
     {
-        return $this->hasMany(UserProfile::class);
+        return $this->hasOne(UserProfile::class);
     }
 
-    public function userSettings(): HasMany
+    public function userSettings(): HasOne
     {
-        return $this->hasMany(UserSetting::class);
+        return $this->hasOne(UserSetting::class);
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_role')->using(UserRole::class);
+    }
+
+    public function passwordTokens(): HasMany
+    {
+        return $this->hasMany(DB::table('password_reset_tokens'));
+    }
+
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(DB::table('sessions'));
     }
 }
