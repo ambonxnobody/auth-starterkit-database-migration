@@ -105,4 +105,9 @@ class User extends Authenticatable
     {
         $this->roles()->attach(Role::where('name', $role)->first());
     }
+
+    public function assetShares(): BelongsToMany
+    {
+        return $this->belongsToMany(Asset::class, 'asset_share')->using(AssetShare::class);
+    }
 }

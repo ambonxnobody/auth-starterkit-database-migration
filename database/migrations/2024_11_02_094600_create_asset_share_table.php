@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Asset;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -12,17 +14,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assets', function (Blueprint $table) {
+        Schema::create('asset_share', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->nullableUuidMorphs('owner');
-            $table->string('name');
-            $table->string('type')->default('file')->comment('image, video, pdf, file');
-//            $table->enum('access', ['public', 'private'])->default('private');
+            $table->foreignIdFor(Asset::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->string('access')->default('viewer')->comment('viewer, editor, owner');
-            $table->enum('bucket_type', ['private', 'public'])->default('private');
-            $table->string('path');
-            $table->decimal('bytes', 20, 0)->default(0);
-            $table->jsonb('file_metadata')->nullable();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
@@ -35,13 +31,13 @@ return new class extends Migration
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps
-        BEFORE INSERT ON assets
+        BEFORE INSERT ON asset_share
         FOR EACH ROW EXECUTE FUNCTION update_created_at_jsonb_timestamps();
         ");
 
         DB::statement("
         CREATE TRIGGER set_updated_at_jsonb_timestamps
-        BEFORE UPDATE ON assets
+        BEFORE UPDATE ON asset_share
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_jsonb_timestamps();
         ");
     }
@@ -51,8 +47,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assets');
-        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON assets;');
-        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON assets;');
+        Schema::dropIfExists('asset_share');
+        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON asset_share;');
+        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON asset_share;');
     }
 };
