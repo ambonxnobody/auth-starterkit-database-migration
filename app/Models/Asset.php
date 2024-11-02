@@ -50,4 +50,9 @@ class Asset extends Model
     {
         return $this->belongsToMany(User::class, 'asset_share')->using(AssetShare::class);
     }
+
+    public function assetComments(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'asset_comment')->using(AssetComment::class);
+    }
 }
