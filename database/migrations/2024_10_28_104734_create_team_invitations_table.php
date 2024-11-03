@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('contact');
             $table->string('type')->default('email');
             $table->string('token')->unique();
-            $table->timestamp('expires_at');
+            $table->unsignedBigInteger('expires_at');
             $table->foreignIdFor(Role::class)->constrained()->cascadeOnDelete();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,

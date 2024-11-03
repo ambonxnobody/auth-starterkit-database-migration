@@ -13,7 +13,11 @@ class TeamInvitation extends Model
     use HasUuids;
 
     protected $fillable = [
-        'email',
+        'team_id',
+        'contact',
+        'type',
+        'token',
+        'expires_at',
         'role_id',
     ];
 

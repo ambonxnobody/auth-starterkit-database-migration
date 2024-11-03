@@ -16,6 +16,7 @@ class AssetShare extends Pivot
         'asset_id',
         'user_id',
         'access',
+        'granted_at',
         'metadata',
     ];
 

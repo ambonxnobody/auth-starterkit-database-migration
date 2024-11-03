@@ -16,14 +16,14 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
             $table->text('email')->unique()->nullable();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->unsignedBigInteger('email_verified_at')->nullable();
             $table->text('phone')->unique()->nullable();
-            $table->timestamp('phone_verified_at')->nullable();
+            $table->unsignedBigInteger('phone_verified_at')->nullable();
             $table->text('username')->unique()->nullable();
             $table->text('password');
             $table->text('two_factor_secret')->nullable();
             $table->text('two_factor_recovery_codes')->nullable();
-            $table->timestamp('two_factor_confirmed_at')->nullable();
+            $table->unsignedBigInteger('two_factor_confirmed_at')->nullable();
             $table->boolean('is_active')->default(false);
             $table->string('role')->default('user');
             $table->rememberToken();
@@ -77,7 +77,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('token');
             $table->integer('attempts')->default(0);
-            $table->timestamp('expires_at');
+            $table->unsignedBigInteger('expires_at');
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,

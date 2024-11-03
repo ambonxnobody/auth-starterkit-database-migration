@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Asset::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->string('access')->default('viewer')->comment('viewer, editor, owner');
+            $table->unsignedBigInteger('granted_at')->nullable();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,

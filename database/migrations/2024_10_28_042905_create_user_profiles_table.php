@@ -23,11 +23,11 @@ return new class extends Migration
             $collection->string('nick_name')->nullable();
             $collection->foreignIdFor(Asset::class, 'avatar_id')->nullable()->index()->constrained()->nullOnDelete();
             $collection->document('metadata', function (Blueprint $collection) {
-                $collection->timestamp('created_at')->useCurrent();
+                $collection->unsignedBigInteger('created_at');
                 $collection->string('created_by');
-                $collection->timestamp('updated_at')->useCurrent();
+                $collection->unsignedBigInteger('updated_at');
                 $collection->string('updated_by');
-                $collection->timestamp('deleted_at')->nullable();
+                $collection->unsignedBigInteger('deleted_at')->nullable();
                 $collection->string('deleted_by')->nullable();
             });
         });
