@@ -15,15 +15,15 @@ return new class extends Migration
     {
         Schema::create('assets', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-//            $table->nullableUuidMorphs('owner');
             $table->foreignIdFor(User::class, 'owner_id')->constrained('users')->cascadeOnDelete();
+            // folder_id is nullable because it can be a root folder
             $table->string('name');
-            $table->string('type')->default('file')->comment('image, video, pdf, file');
-//            $table->enum('access', ['public', 'private'])->default('private');
-            $table->string('access')->default('viewer')->comment('viewer, editor, owner');
-            $table->enum('bucket_type', ['private', 'public'])->default('private');
             $table->string('path');
-            $table->decimal('bytes', 20, 0)->default(0);
+            $table->unsignedBigInteger('size')->default(0);
+            $table->string('type')->default('file')->comment('document, spreadsheet, presentation, form, image, pdf, video, shortcut, site, audio, drawing, archive, file');
+            $table->string('access')->default('viewer')->comment('viewer, editor, owner');
+            $table->string('bucket_name');
+            $table->boolean('is_public')->default(false);
             $table->jsonb('file_metadata')->nullable();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
