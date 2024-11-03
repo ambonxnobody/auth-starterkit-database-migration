@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Asset;
+use App\Models\Folder;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,12 +14,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_share', function (Blueprint $table) {
+        Schema::create('folders', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignIdFor(Asset::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->string('access')->default('viewer')->comment('viewer, editor, owner');
-            $table->unsignedBigInteger('granted_at');
+            $table->foreignIdFor(User::class, 'owner_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('parent_id')->nullable();
+            $table->string('name');
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
@@ -30,17 +29,17 @@ return new class extends Migration
             ]));
         });
 
-        DB::statement("ALTER TABLE asset_share ALTER COLUMN granted_at SET DEFAULT (EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'UTC') * 1000)::BIGINT");
+        DB::statement('ALTER TABLE folders ADD CONSTRAINT fk_folders_parent_id FOREIGN KEY (parent_id) REFERENCES folders(id) ON DELETE CASCADE;');
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps
-        BEFORE INSERT ON asset_share
+        BEFORE INSERT ON folders
         FOR EACH ROW EXECUTE FUNCTION update_created_at_jsonb_timestamps();
         ");
 
         DB::statement("
         CREATE TRIGGER set_updated_at_jsonb_timestamps
-        BEFORE UPDATE ON asset_share
+        BEFORE UPDATE ON folders
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_jsonb_timestamps();
         ");
     }
@@ -50,8 +49,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asset_share');
-        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON asset_share;');
-        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON asset_share;');
+        Schema::dropIfExists('folders');
+        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON folders;');
+        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON folders;');
     }
 };

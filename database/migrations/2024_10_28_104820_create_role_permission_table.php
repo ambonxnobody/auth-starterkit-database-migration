@@ -26,6 +26,8 @@ return new class extends Migration
                 'deleted_at' => null,
                 'deleted_by' => null,
             ]));
+
+            $table->unique(['permission_id', 'role_id']);
         });
 
         DB::statement("

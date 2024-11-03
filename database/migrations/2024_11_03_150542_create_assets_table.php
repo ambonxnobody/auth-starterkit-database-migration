@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Folder;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,7 +17,7 @@ return new class extends Migration
         Schema::create('assets', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
             $table->foreignIdFor(User::class, 'owner_id')->constrained('users')->cascadeOnDelete();
-            // folder_id is nullable because it can be a root folder
+            $table->foreignIdFor(Folder::class)->nullable()->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('path');
             $table->unsignedBigInteger('size')->default(0);

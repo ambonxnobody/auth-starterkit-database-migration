@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Asset extends Model
 {
@@ -57,5 +56,15 @@ class Asset extends Model
     public function assetComments(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'asset_comment')->using(AssetComment::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'asset_tag')->using(AssetTag::class);
+    }
+
+    public function folder(): BelongsTo
+    {
+        return $this->belongsTo(Folder::class);
     }
 }

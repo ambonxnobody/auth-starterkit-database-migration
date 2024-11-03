@@ -6,16 +6,13 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class AssetShare extends Pivot
+class AssetTag extends Pivot
 {
     use HasUuids;
 
     public $timestamps = false;
 
     protected $fillable = [
-        'asset_id',
-        'user_id',
-        'access',
         'metadata',
     ];
 
@@ -23,13 +20,13 @@ class AssetShare extends Pivot
         'metadata' => 'array',
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function asset(): BelongsTo
     {
         return $this->belongsTo(Asset::class);
+    }
+
+    public function tag(): BelongsTo
+    {
+        return $this->belongsTo(Tag::class);
     }
 }

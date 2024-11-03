@@ -1,8 +1,7 @@
 <?php
 
-use App\Models\Role;
-use App\Models\User;
-use Database\Seeders\AuthSeeder;
+use App\Models\Asset;
+use App\Models\Tag;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -15,36 +14,33 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_role', function (Blueprint $table) {
+        Schema::create('asset_tag', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignIdFor(User::class)->index()->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Role::class)->index()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Asset::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Tag::class)->constrained()->cascadeOnDelete();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
                 'updated_at' => null,
                 'updated_by' => null,
                 'deleted_at' => null,
-                'deleted_by' => null,
+                'deleted_by' => null
             ]));
 
-            $table->unique(['user_id', 'role_id']);
+            $table->unique(['asset_id', 'tag_id']);
         });
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps
-        BEFORE INSERT ON user_role
+        BEFORE INSERT ON asset_tag
         FOR EACH ROW EXECUTE FUNCTION update_created_at_jsonb_timestamps();
         ");
 
         DB::statement("
         CREATE TRIGGER set_updated_at_jsonb_timestamps
-        BEFORE UPDATE ON user_role
+        BEFORE UPDATE ON asset_tag
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_jsonb_timestamps();
         ");
-
-        $authSeeder = new AuthSeeder();
-        $authSeeder->run();
     }
 
     /**
@@ -52,8 +48,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_role');
-        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON user_role;');
-        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON user_role;');
+        Schema::dropIfExists('asset_tag');
+        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON asset_tag;');
+        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON asset_tag;');
     }
 };

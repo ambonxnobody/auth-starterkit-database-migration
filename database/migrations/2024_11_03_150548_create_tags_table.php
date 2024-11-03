@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Asset;
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -14,11 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset_comment', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignIdFor(Asset::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->text('comment');
+            $table->string('name')->unique();
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
@@ -31,13 +27,13 @@ return new class extends Migration
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps
-        BEFORE INSERT ON asset_comment
+        BEFORE INSERT ON tags
         FOR EACH ROW EXECUTE FUNCTION update_created_at_jsonb_timestamps();
         ");
 
         DB::statement("
         CREATE TRIGGER set_updated_at_jsonb_timestamps
-        BEFORE UPDATE ON asset_comment
+        BEFORE UPDATE ON tags
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_jsonb_timestamps();
         ");
     }
@@ -47,8 +43,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asset_comment');
-        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON asset_comment;');
-        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON asset_comment;');
+        Schema::dropIfExists('tags');
+        DB::statement('DROP TRIGGER IF EXISTS set_created_at_jsonb_timestamps ON tags;');
+        DB::statement('DROP TRIGGER IF EXISTS set_updated_at_jsonb_timestamps ON tags;');
     }
 };

@@ -6,11 +6,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
-use MongoDB\Laravel\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -113,5 +113,15 @@ class User extends Authenticatable
     public function assetComments(): BelongsToMany
     {
         return $this->belongsToMany(Asset::class, 'asset_comment')->using(AssetComment::class);
+    }
+
+    public function folders(): HasMany
+    {
+        return $this->hasMany(Folder::class, 'owner_id');
+    }
+
+    public function assets(): HasMany
+    {
+        return $this->hasMany(Asset::class, 'owner_id');
     }
 }
