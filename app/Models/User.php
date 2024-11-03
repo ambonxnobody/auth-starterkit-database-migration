@@ -75,12 +75,12 @@ class User extends Authenticatable
         return $this->hasMany(Team::class, 'owner_id');
     }
 
-    public function profiles(): HasOne
+    public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
     }
 
-    public function userSettings(): HasOne
+    public function userSetting(): HasOne
     {
         return $this->hasOne(UserSetting::class);
     }

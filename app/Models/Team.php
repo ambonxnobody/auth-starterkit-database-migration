@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Team extends Model
 {
@@ -48,5 +49,15 @@ class Team extends Model
     public function roles(): HasMany
     {
         return $this->hasMany(Role::class);
+    }
+
+    public function teamProfile(): HasOne
+    {
+        return $this->hasOne(TeamProfile::class);
+    }
+
+    public function teamSetting(): HasOne
+    {
+        return $this->hasOne(TeamSetting::class);
     }
 }
