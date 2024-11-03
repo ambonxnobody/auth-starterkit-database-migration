@@ -20,9 +20,9 @@ class UserProfileFactory extends Factory
             'full_name' => $this->faker->name(),
             'nick_name' => $this->faker->name(),
             'metadata' => [
-                'created_at' => now()->toDateTimeString(),
+                'created_at' => round(microtime(true) * 1000),
                 'created_by' => null,
-                'updated_at' => now()->toDateTimeString(),
+                'updated_at' => round(microtime(true) * 1000),
                 'updated_by' => null,
                 'deleted_at' => null,
                 'deleted_by' => null

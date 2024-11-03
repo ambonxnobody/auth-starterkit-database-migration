@@ -41,8 +41,8 @@ return new class extends Migration
         CREATE OR REPLACE FUNCTION update_created_at_jsonb_timestamps()
         RETURNS TRIGGER AS $$
         BEGIN
-            NEW.metadata = jsonb_set(NEW.metadata, '{created_at}', to_jsonb(NOW()), true);
-            NEW.metadata = jsonb_set(NEW.metadata, '{updated_at}', to_jsonb(NOW()), true);
+            NEW.metadata = jsonb_set(NEW.metadata, '{created_at}', to_jsonb((EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'UTC') * 1000)::BIGINT), true);
+            NEW.metadata = jsonb_set(NEW.metadata, '{updated_at}', to_jsonb((EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'UTC') * 1000)::BIGINT), true);
             RETURN NEW;
         END;
         $$ LANGUAGE plpgsql;
@@ -52,7 +52,7 @@ return new class extends Migration
         CREATE OR REPLACE FUNCTION update_updated_at_jsonb_timestamps()
         RETURNS TRIGGER AS $$
         BEGIN
-            NEW.metadata = jsonb_set(NEW.metadata, '{updated_at}', to_jsonb(NOW()), true);
+            NEW.metadata = jsonb_set(NEW.metadata, '{updated_at}', to_jsonb((EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'UTC') * 1000)::BIGINT), true);
             RETURN NEW;
         END;
         $$ LANGUAGE plpgsql;
