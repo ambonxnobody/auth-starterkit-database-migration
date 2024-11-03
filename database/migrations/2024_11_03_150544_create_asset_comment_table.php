@@ -18,7 +18,9 @@ return new class extends Migration
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
             $table->foreignIdFor(Asset::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->uuid('parent_id')->nullable();
             $table->text('comment');
+            $table->boolean('is_resolved')->default(false);
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
@@ -30,6 +32,8 @@ return new class extends Migration
 
             $table->unique(['asset_id', 'user_id']);
         });
+
+        DB::statement('ALTER TABLE asset_comment ADD CONSTRAINT fk_asset_comment_parent_id FOREIGN KEY (parent_id) REFERENCES asset_comment(id) ON DELETE CASCADE;');
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps
