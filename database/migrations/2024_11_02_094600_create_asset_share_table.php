@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Asset::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->string('access')->default('viewer')->comment('viewer, editor, owner');
-            $table->unsignedBigInteger('granted_at')->default(DB::raw('(EXTRACT(EPOCH FROM NOW() AT TIME ZONE \'UTC\') * 1000)::BIGINT)'));
+            $table->unsignedBigInteger('granted_at');
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
@@ -29,6 +29,8 @@ return new class extends Migration
                 'deleted_by' => null
             ]));
         });
+
+        DB::statement("ALTER TABLE asset_share ALTER COLUMN granted_at SET DEFAULT (EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'UTC') * 1000)::BIGINT");
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps

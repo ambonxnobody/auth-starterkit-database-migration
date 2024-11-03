@@ -80,7 +80,7 @@ return new class extends Migration
             $table->text('queue');
             $table->longText('payload');
             $table->longText('exception');
-            $table->unsignedBigInteger('failed_at')->default('(EXTRACT(EPOCH FROM NOW() AT TIME ZONE \'UTC\') * 1000)::BIGINT)');
+            $table->unsignedBigInteger('failed_at');
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
@@ -90,6 +90,8 @@ return new class extends Migration
                 'deleted_by' => null
             ]));
         });
+
+        DB::statement("ALTER TABLE failed_jobs ALTER COLUMN failed_at SET DEFAULT (EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'UTC') * 1000)::BIGINT");
 
         DB::statement("
         CREATE TRIGGER set_created_at_jsonb_timestamps
