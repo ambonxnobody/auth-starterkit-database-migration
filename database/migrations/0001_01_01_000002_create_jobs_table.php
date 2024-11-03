@@ -80,7 +80,7 @@ return new class extends Migration
             $table->text('queue');
             $table->longText('payload');
             $table->longText('exception');
-            $table->unsignedBigInteger('failed_at');
+            $table->unsignedBigInteger('failed_at')->default('(EXTRACT(EPOCH FROM NOW() AT TIME ZONE \'UTC\') * 1000)::BIGINT)');
             $table->jsonb('metadata')->default(json_encode([
                 'created_at' => null,
                 'created_by' => null,
