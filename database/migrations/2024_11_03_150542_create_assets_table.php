@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('path');
             $table->unsignedBigInteger('size')->default(0);
             $table->string('type')->default('file')->comment('document, spreadsheet, presentation, form, image, pdf, video, shortcut, site, audio, drawing, archive, file');
-            $table->string('access')->default('viewer')->comment('viewer, editor, owner');
+            $table->string('access')->default('viewer')->comment('viewer, editor, commenter');
             $table->string('bucket_name');
             $table->boolean('is_public')->default(false);
             $table->jsonb('file_metadata')->nullable();
