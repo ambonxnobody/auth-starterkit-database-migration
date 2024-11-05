@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
@@ -120,8 +121,8 @@ class User extends Authenticatable
         return $this->hasMany(Folder::class, 'owner_id');
     }
 
-    public function assets(): HasMany
+    public function assets(): MorphMany
     {
-        return $this->hasMany(Asset::class, 'owner_id');
+        return $this->morphMany(Asset::class, 'owner');
     }
 }

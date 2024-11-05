@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('folders', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->foreignIdFor(User::class, 'owner_id')->constrained('users')->cascadeOnDelete();
+            $table->nullableUuidMorphs('owner');
             $table->uuid('parent_id')->nullable();
             $table->string('name');
             $table->jsonb('metadata')->default(json_encode([

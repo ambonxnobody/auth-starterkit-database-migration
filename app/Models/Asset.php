@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Asset extends Model
 {
@@ -16,6 +17,7 @@ class Asset extends Model
 
     protected $fillable = [
         'owner_id',
+        'owner_type',
         'name',
         'path',
         'size',
@@ -33,9 +35,9 @@ class Asset extends Model
         'metadata' => 'array',
     ];
 
-    public function owner(): BelongsTo
+    public function owner(): MorphTo
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->morphTo();
     }
 
     public function userProfiles(): HasMany

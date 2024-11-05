@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Folder extends Model
 {
@@ -14,6 +15,10 @@ class Folder extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'owner_id',
+        'owner_type',
+        'parent_id',
+        'name',
         'metadata',
     ];
 
@@ -26,9 +31,9 @@ class Folder extends Model
         return $this->hasMany(Asset::class);
     }
 
-    public function owner(): BelongsTo
+    public function owner(): MorphTo
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->morphTo();
     }
 
     public function parent(): BelongsTo
