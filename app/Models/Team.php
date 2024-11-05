@@ -62,6 +62,11 @@ class Team extends Model
         return $this->hasOne(TeamSetting::class);
     }
 
+    public function folders(): MorphMany
+    {
+        return $this->morphMany(Folder::class, 'owner');
+    }
+
     public function assets(): MorphMany
     {
         return $this->morphMany(Asset::class, 'owner');

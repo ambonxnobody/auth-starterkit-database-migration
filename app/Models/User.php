@@ -116,9 +116,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Asset::class, 'asset_comment')->using(AssetComment::class);
     }
 
-    public function folders(): HasMany
+    public function folders(): MorphMany
     {
-        return $this->hasMany(Folder::class, 'owner_id');
+        return $this->morphMany(Folder::class, 'owner');
     }
 
     public function assets(): MorphMany
