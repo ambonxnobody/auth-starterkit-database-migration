@@ -19,16 +19,16 @@ class Team extends Model
     protected $fillable = [
         'owner_id',
         'name',
-//        'personal_team',
         'is_active',
+//        'personal_team',
     ];
 
     protected function casts(): array
     {
         return [
-//            'personal_team' => 'boolean',
             'is_active' => 'boolean',
             'metadata' => 'array',
+//            'personal_team' => 'boolean',
         ];
     }
 
@@ -37,7 +37,7 @@ class Team extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function users(): BelongsToMany
+    public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'team_user')->using(TeamUser::class);
     }

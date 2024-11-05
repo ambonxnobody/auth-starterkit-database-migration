@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('cache', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            $table->string('key')->unique();
             $table->mediumText('value');
             $table->integer('expiration');
             $table->jsonb('metadata')->default(json_encode([
@@ -40,6 +41,7 @@ return new class extends Migration
 
         Schema::create('cache_locks', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            $table->string('key')->unique();
             $table->string('owner');
             $table->integer('expiration');
             $table->jsonb('metadata')->default(json_encode([

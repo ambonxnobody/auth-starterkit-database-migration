@@ -24,11 +24,6 @@ class Role extends Model
         return $this->hasMany(TeamInvitation::class);
     }
 
-    public function teamUsers(): HasMany
-    {
-        return $this->hasMany(TeamUser::class);
-    }
-
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
